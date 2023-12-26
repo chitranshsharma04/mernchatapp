@@ -1,7 +1,11 @@
 import { Button } from "@chakra-ui/button";
+
 import { useDisclosure } from "@chakra-ui/hooks";
+
 import { Input } from "@chakra-ui/input";
+
 import { Box, Text } from "@chakra-ui/layout";
+
 import {
   Menu,
   MenuButton,
@@ -9,6 +13,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/menu";
+
 import {
   Drawer,
   DrawerBody,
@@ -16,27 +21,47 @@ import {
   DrawerHeader,
   DrawerOverlay,
 } from "@chakra-ui/modal";
+
 import { Tooltip } from "@chakra-ui/tooltip";
+
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+
 import { Avatar } from "@chakra-ui/avatar";
+
 import { useHistory } from "react-router-dom";
+
 import { useState } from "react";
+
 import axios from "axios";
+
 import { useToast } from "@chakra-ui/toast";
+
 import ChatLoading from "../ChatLoading";
+
 import { Spinner } from "@chakra-ui/spinner";
+
 import ProfileModal from "./ProfileModal";
+
 import NotificationBadge from "react-notification-badge";
+
 import { Effect } from "react-notification-badge";
+
 import { getSender } from "../../config/ChatLogics";
+
 import UserListItem from "../userAvatar/UserListItem";
+
 import { ChatState } from "../../Context/ChatProvider";
+
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
+
   const [searchResult, setSearchResult] = useState([]);
+
   const [loading, setLoading] = useState(false);
+
   const [loadingChat, setLoadingChat] = useState(false);
+
 
   const {
     setSelectedChat,
@@ -47,14 +72,21 @@ function SideDrawer() {
     setChats,
   } = ChatState();
 
+
   const toast = useToast();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const history = useHistory();
+
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+
     history.push("/");
+
   };
+
 
   const handleSearch = async () => {
     if (!search) {
@@ -65,11 +97,14 @@ function SideDrawer() {
         isClosable: true,
         position: "top-left",
       });
+
       return;
+
     }
 
     try {
       setLoading(true);
+
 
       const config = {
         headers: {
@@ -77,10 +112,14 @@ function SideDrawer() {
         },
       };
 
+
       const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config);
 
+
       setLoading(false);
+
       setSearchResult(data);
+
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -90,26 +129,36 @@ function SideDrawer() {
         isClosable: true,
         position: "bottom-left",
       });
+
     }
   };
+
 
   const accessChat = async (userId) => {
     console.log(userId);
 
+
     try {
       setLoadingChat(true);
+
       const config = {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
+
       const { data } = await axios.post(`http://localhost:5000/api/chat`, { userId }, config);
 
+
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+
       setSelectedChat(data);
+
       setLoadingChat(false);
+
       onClose();
+
     } catch (error) {
       toast({
         title: "Error fetching the chat",
@@ -119,8 +168,10 @@ function SideDrawer() {
         isClosable: true,
         position: "bottom-left",
       });
+
     }
   };
+
 
   return (
     <>
@@ -160,7 +211,9 @@ function SideDrawer() {
                   key={notif._id}
                   onClick={() => {
                     setSelectedChat(notif.chat);
+
                     setNotification(notification.filter((n) => n !== notif));
+
                   }}
                 >
                   {notif.chat.isGroupChat
@@ -221,6 +274,8 @@ function SideDrawer() {
       </Drawer>
     </>
   );
+
 }
 
 export default SideDrawer;
+

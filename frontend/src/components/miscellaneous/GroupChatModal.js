@@ -13,22 +13,36 @@ import {
   useToast,
   Box,
 } from "@chakra-ui/react";
+
 import axios from "axios";
+
 import { useState } from "react";
+
 import { ChatState } from "../../Context/ChatProvider";
+
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
+
 import UserListItem from "../userAvatar/UserListItem";
+
 
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [groupChatName, setGroupChatName] = useState();
+
   const [selectedUsers, setSelectedUsers] = useState([]);
+
   const [search, setSearch] = useState("");
+
   const [searchResult, setSearchResult] = useState([]);
+
   const [loading, setLoading] = useState(false);
+
   const toast = useToast();
 
+
   const { user, chats, setChats } = ChatState();
+
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -39,29 +53,41 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "top",
       });
+
       return;
+
     }
 
     setSelectedUsers([...selectedUsers, userToAdd]);
+
   };
+
 
   const handleSearch = async (query) => {
     setSearch(query);
+
     if (!query) {
       return;
+
     }
 
     try {
       setLoading(true);
+
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
+
       const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config);
+
       console.log(data);
+
       setLoading(false);
+
       setSearchResult(data);
+
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -71,12 +97,16 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "bottom-left",
       });
+
     }
   };
 
+
   const handleDelete = (delUser) => {
     setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
+
   };
+
 
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
@@ -87,7 +117,9 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "top",
       });
+
       return;
+
     }
 
     try {
@@ -96,6 +128,7 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
+
       const { data } = await axios.post(
         `http://localhost:5000/api/chat/group`,
         {
@@ -104,8 +137,11 @@ const GroupChatModal = ({ children }) => {
         },
         config
       );
+
       setChats([data, ...chats]);
+
       onClose();
+
       toast({
         title: "New Group Chat Created!",
         status: "success",
@@ -113,6 +149,7 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "bottom",
       });
+
     } catch (error) {
       toast({
         title: "Failed to Create the Chat!",
@@ -122,8 +159,10 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "bottom",
       });
+
     }
   };
+
 
   return (
     <>
@@ -189,6 +228,9 @@ const GroupChatModal = ({ children }) => {
       </Modal>
     </>
   );
+
 };
 
+
 export default GroupChatModal;
+
