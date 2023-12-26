@@ -80,6 +80,7 @@ function SideDrawer() {
       const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config);
 
       setLoading(false);
+      console.log(data,"here")
       setSearchResult(data);
     } catch (error) {
       toast({
