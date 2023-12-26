@@ -1,44 +1,26 @@
 import { Button } from "@chakra-ui/button";
-
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
-
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-
 import { VStack } from "@chakra-ui/layout";
-
 import { useState } from "react";
-
 import axios from "axios";
-
 import { useToast } from "@chakra-ui/react";
-
 import { useHistory } from "react-router-dom";
-
 import { ChatState } from "../../Context/ChatProvider";
-
 
 const Login = () => {
   const [show, setShow] = useState(false);
-
   const handleClick = () => setShow(!show);
-
   const toast = useToast();
-
   const [email, setEmail] = useState();
-
   const [password, setPassword] = useState();
-
   const [loading, setLoading] = useState(false);
 
-
   const history = useHistory();
-
   const { setUser } = ChatState();
-
 
   const submitHandler = async () => {
     setLoading(true);
-
     if (!email || !password) {
       toast({
         title: "Please Fill all the Feilds",
@@ -47,11 +29,8 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-
       setLoading(false);
-
       return;
-
     }
 
     try {
@@ -61,13 +40,11 @@ const Login = () => {
         },
       };
 
-
       const { data } = await axios.post(
         "http://localhost:5000/api/user/login",
         { email, password },
         config
       );
-
 
       toast({
         title: "Login Successful",
@@ -76,15 +53,10 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-
       setUser(data);
-
       localStorage.setItem("userInfo", JSON.stringify(data));
-
       setLoading(false);
-
       history.push("/chats");
-
     } catch (error) {
       console.log(error)
       toast({
@@ -95,12 +67,9 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-
       setLoading(false);
-
     }
   };
-
 
   return (
     <VStack spacing="10px">
@@ -144,18 +113,13 @@ const Login = () => {
         width="100%"
         onClick={() => {
           setEmail("guest@example.com");
-
           setPassword("123456");
-
         }}
       >
         Get Guest User Credentials
       </Button>
     </VStack>
   );
-
 };
 
-
 export default Login;
-

@@ -1,9 +1,6 @@
 const asyncHandler = require("express-async-handler");
-
 const User = require("../models/userModel");
-
 const generateToken = require("../config/generateToken");
-
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
@@ -18,13 +15,9 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {};
 
-
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-
   res.send(users);
-
 });
-
 
 //@description     Register new user
 //@route           POST /api/user/
@@ -32,22 +25,16 @@ const allUsers = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
 
-
   if (!name || !email || !password) {
     res.status(400);
-
     throw new Error("Please Enter all the Feilds");
-
   }
 
   const userExists = await User.findOne({ email });
 
-
   if (userExists) {
     res.status(400);
-
     throw new Error("User already exists");
-
   }
 
   const user = await User.create({
@@ -56,7 +43,6 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     pic,
   });
-
 
   if (user) {
     res.status(201).json({
@@ -67,15 +53,11 @@ const registerUser = asyncHandler(async (req, res) => {
       pic: user.pic,
       token: generateToken(user._id),
     });
-
   } else {
     res.status(400);
-
     throw new Error("User not found");
-
   }
 });
-
 
 //@description     Auth the user
 //@route           POST /api/users/login
@@ -83,9 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-
   const user = await User.findOne({ email });
-
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -96,15 +76,10 @@ const authUser = asyncHandler(async (req, res) => {
       pic: user.pic,
       token: generateToken(user._id),
     });
-
   } else {
     res.status(401);
-
     throw new Error("Invalid Email or Password");
-
   }
 });
 
-
 module.exports = { allUsers, registerUser, authUser };
-
