@@ -4,13 +4,15 @@ const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const cors = require("cors")
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
 dotenv.config();
 connectDB();
 const app = express();
-
+app.use(cors())
+console.log(process.env.TOKEN)
 app.use(express.json()); // to accept json data
 
 // app.get("/", (req, res) => {
@@ -43,11 +45,11 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = 5000;
 
 const server = app.listen(
   PORT,
-  console.log(`Server running on PORT ${PORT}...`.yellow.bold)
+  console.log(`Server running on PORT ${PORT}...`)
 );
 
 const io = require("socket.io")(server, {
